@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: workflow-postgres
+    environment:
+      POSTGRES_DB: workflow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: supersecret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - workflow-network
+
+  # Backend Workflow API
+  backend-workflow:
+    build:
+      context: ./backend/workflow
+      dockerfile: Dockerfile
+    container_name: workflow-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:supersecret@postgres:5432/workflow
+      PORT: 8080
+      NODE_ENV: production
+      JWT_SECRET: your-secret-key-change-it-in-prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workflow-network
+    restart: unless-stopped
+
+  # Frontend - User App (Remote)
+  user-app:
+    build:
+      context: ./frontend
+      dockerfile: apps/user-app/Dockerfile
+      args:
+        APP_NAME: user-app
+        APP_BASE_URL: http://localhost:3001
+    container_name: workflow-user-app
+    ports:
+      - "3001:80"
+    networks:
+      - workflow-network
+    restart: unless-stopped
+
+  # Frontend - Account App (Remote)
+  account-app:
+    build:
+      context: ./frontend
+      dockerfile: apps/account-app/Dockerfile
+      args:
+        APP_NAME: account-app
+        APP_BASE_URL: http://localhost:3002
+    container_name: workflow-account-app
+    ports:
+      - "3002:80"
+    networks:
+      - workflow-network
+    restart: unless-stopped
+
+  # Frontend - Promotion App (Remote)
+  promotion-app:
+    build:
+      context: ./frontend
+      dockerfile: apps/promotion-app/Dockerfile
+      args:
+        APP_NAME: promotion-app
+        APP_BASE_URL: http://localhost:3003
+    container_name: workflow-promotion-app
+    ports:
+      - "3003:80"
+    networks:
+      - workflow-network
+    restart: unless-stopped
+
+  # Frontend - Host App (Main)
+  host-app:
+    build:
+      context: ./frontend
+      dockerfile: apps/host-app/Dockerfile
+      args:
+        APP_NAME: host-app
+        USER_APP_URL: http://localhost:3001
+        ACCOUNT_APP_URL: http://localhost:3002
+        PROMOTION_APP_URL: http://localhost:3003
+        REACT_APP_API_URL: http://localhost:8080
+    container_name: workflow-host-app
+    ports:
+      - "3000:80"
+    depends_on:
+      - user-app
+      - account-app
+      - promotion-app
+      - backend-workflow
+    networks:
+      - workflow-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  workflow-network:
+    driver: bridge

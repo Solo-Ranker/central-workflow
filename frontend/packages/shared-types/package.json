@@ -1,0 +1,12 @@
+{
+  "name": "shared-types",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "types": "index.ts",
+  "dependencies": {
+    "react": "19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  }
+}

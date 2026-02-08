@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+tmp/
+temp/
+
+# Tutorials and docs
+tutorials/
+README.md

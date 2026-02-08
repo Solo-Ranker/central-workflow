@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: host-app
+  namespace: central-workflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: host-app
+  template:
+    metadata:
+      labels:
+        app: host-app
+    spec:
+      containers:
+        - name: host-app
+          image: host-app:latest
+          imagePullPolicy: Never # use the local image
+          ports:
+            - containerPort: 80
+          env:
+            - name: USER_APP_URL
+              value: http://localhost:30001
+            - name: ACCOUNT_APP_URL
+              value: http://localhost:30002
+            - name: PROMOTION_APP_URL
+              value: http://localhost:30003
+            - name: REACT_APP_API_URL
+              value: http://localhost:31000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

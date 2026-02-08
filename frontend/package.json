@@ -1,0 +1,9 @@
+{
+  "name": "workflow-system",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "start": "pnpm -r start"
+  }
+}
