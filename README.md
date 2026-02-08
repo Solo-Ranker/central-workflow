@@ -166,12 +166,6 @@ central-workflow/
 │   ├── services/
 │   └── hpa/
 │
-├── tutorials/                 # Step-by-step guides
-│   └── linkedin/
-│       ├── backend-workflow-tutorial.md
-│       ├── frontend-workflow-tutorial.md
-│       └── kubernetes-deployment-tutorial.md
-│
 ├── docker-compose.yaml        # Local development
 └── README.md
 ```
