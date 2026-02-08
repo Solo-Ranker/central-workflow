@@ -199,3 +199,6 @@ central-workflow/
 - **Containerization**: Docker (Multi-stage builds)
 - **Orchestration**: Kubernetes
 - **Package Manager**: pnpm (Workspace support)
+
+
+For detailed tutorials, check the [docs](/docs/introduction.md) directory!
